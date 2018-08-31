@@ -2,14 +2,16 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Security.Principal;
 using System.Windows.Forms;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace GutterLines
 {
     public partial class Window : Form
     {
         private MemRead memRead;
+        private FileRead fileRead;
         private int lat;
         private int lon;
         private const int gridScale = 4;
@@ -17,36 +19,76 @@ namespace GutterLines
         private const int gridMax = gridScale * 40;
         private MenuItem alertToggle;
         private bool flashAlert;
+        private Settings _settings = null;
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
 
+        private void SaveSettings(Settings settings)
+        {   
+            File.WriteAllText("settings.ini", JsonConvert.SerializeObject(_settings, Formatting.Indented));
+        }
+        private Settings LoadSettings()
+        {
+            return JsonConvert.DeserializeObject<Settings>(File.ReadAllText("settings.ini"));
+        }
+
         [STAThread]
         static void Main()
         {
-            try
-            {
-                if ((new WindowsPrincipal(WindowsIdentity.GetCurrent())).IsInRole(WindowsBuiltInRole.Administrator))
-                {
-                    Application.Run(new Window());
-                }
-                else
-                {
-                    MessageBox.Show("GutterLines must be ran as Administrator.", "Privilege Error");
-                    Application.Exit();
-                }
-            }
-            catch
-            {
-                Application.Exit();
-            }
+            Application.Run(new Window());           
         }
 
         public Window()
         {
+            
+
+            try
+            {
+                if (File.Exists("settings.ini"))
+                {
+                    _settings = LoadSettings();
+                }
+                else
+                {
+                    _settings = new Settings()
+                    {
+                        CoordsAccessMod = CoordsAccessMods.File,
+                        ChatLogConfigs = new ChatLogConfig[] 
+                        {
+                            new ChatLogConfig()
+                            {
+                                Name = "Default",
+                                Path = @"C:\Games\Ragnarok Online\Chat",
+                                FileNamePattern = @"Chat_General*",
+                                CoordsPattern = @"[^\:]* \((?<city>[0-9a-zA-Z_]+)\) : (?<lat>\d{1,3})\, (?<lon>\d{1,3})\Z",
+                                RemoveFilesAfterRead = true
+                            },
+                            new ChatLogConfig()
+                            {
+                                Name = "ruRO",
+                                Path = @"C:\Games\Ragnarok Online\Chat",
+                                FileNamePattern = @"Chat_Общий чат*",
+                                CoordsPattern = @"[^\:]* \((?<city>[0-9a-zA-Z_]+)\) : (?<lat>\d{1,3})\, (?<lon>\d{1,3})\Z",
+                                RemoveFilesAfterRead = true
+                            }
+                        },
+                        CurrentChatLogConfigIndex = 1
+                    };
+                    SaveSettings(_settings);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString(), "Load Settings Error");
+                Application.Exit();
+            }
+
             InitializeComponent();
+            if (_settings.CoordsAccessMod == CoordsAccessMods.File) cbChangeMode.Checked = true;
+            else cbChangeMode.Checked = false;
             flashAlert = GetAlertToggleBool();
             CreateContextMenu();
             StartPosition = FormStartPosition.Manual;
@@ -54,6 +96,7 @@ namespace GutterLines
             BackColor = Color.Pink;
             TransparencyKey = Color.Pink;
             memRead = new MemRead();
+            fileRead = new FileRead();
             memRead.GetProcess();
             var Timer = new Timer()
             {
@@ -108,7 +151,17 @@ namespace GutterLines
 
         private void UpdateWindow(object sender, EventArgs e)
         {
-            var gi = memRead.GetValues();
+            GameInfo gi = null;
+            if (_settings.CoordsAccessMod == CoordsAccessMods.Memory)
+            {
+                gi = memRead.GetValues();
+            }
+            else
+            {
+                if (_settings.ChatLogConfigs.Length > _settings.CurrentChatLogConfigIndex)
+                    gi = fileRead.GetValues(_settings.ChatLogConfigs[_settings.CurrentChatLogConfigIndex]);
+            }
+             
             if (gi != null)
             {
                 LatLonLbl.Text = $"{gi.Name} @ {gi.Lat},{gi.Lon}";
@@ -216,15 +269,34 @@ namespace GutterLines
         }
         private void NextClientBtn_Click(object sender, EventArgs e)
         {
-            memRead.GetProcess();
+            if(_settings.CoordsAccessMod == CoordsAccessMods.Memory)
+            {
+                memRead.GetProcess();
+            }
+            else
+            {
+                if (_settings.ChatLogConfigs.Length > 0)
+                    _settings.CurrentChatLogConfigIndex = (_settings.CurrentChatLogConfigIndex + 1) % _settings.ChatLogConfigs.Length;
+            }
         }
         private void Window_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveWindowPos(Location.X, Location.Y);
         }
+
         #endregion
 
-
+        private void cbChangeMode_CheckedChanged(object sender, EventArgs e)
+        {
+            if((sender as CheckBox).Checked)
+            {
+                _settings.CoordsAccessMod = CoordsAccessMods.File;
+            }
+            else
+            {
+                _settings.CoordsAccessMod = CoordsAccessMods.Memory;
+            }
+        }
     }
 }
 

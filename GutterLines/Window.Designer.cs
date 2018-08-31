@@ -36,6 +36,7 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.titleLbl = new System.Windows.Forms.Label();
             this.NextClientBtn = new System.Windows.Forms.PictureBox();
+            this.cbChangeMode = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExitBtn)).BeginInit();
@@ -102,9 +103,8 @@
             this.titleLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.titleLbl.Location = new System.Drawing.Point(13, 2);
             this.titleLbl.Name = "titleLbl";
-            this.titleLbl.Size = new System.Drawing.Size(103, 13);
+            this.titleLbl.Size = new System.Drawing.Size(0, 13);
             this.titleLbl.TabIndex = 10;
-            this.titleLbl.Text = "Gutter Lines by Tribe";
             this.titleLbl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Window_MouseDown);
             // 
             // NextClientBtn
@@ -119,6 +119,20 @@
             this.NextClientBtn.TabStop = false;
             this.NextClientBtn.Click += new System.EventHandler(this.NextClientBtn_Click);
             // 
+            // cbChangeMode
+            // 
+            this.cbChangeMode.AutoSize = true;
+            this.cbChangeMode.BackColor = System.Drawing.Color.Transparent;
+            this.cbChangeMode.ForeColor = System.Drawing.Color.Black;
+            this.cbChangeMode.Location = new System.Drawing.Point(99, 0);
+            this.cbChangeMode.Name = "cbChangeMode";
+            this.cbChangeMode.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.cbChangeMode.Size = new System.Drawing.Size(39, 17);
+            this.cbChangeMode.TabIndex = 12;
+            this.cbChangeMode.Text = "file";
+            this.cbChangeMode.UseVisualStyleBackColor = false;
+            this.cbChangeMode.CheckedChanged += new System.EventHandler(this.cbChangeMode_CheckedChanged);
+            // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -127,6 +141,7 @@
             this.BackgroundImage = global::GutterLines.Properties.Resources.back;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(158, 195);
+            this.Controls.Add(this.cbChangeMode);
             this.Controls.Add(this.gridMap);
             this.Controls.Add(this.NextClientBtn);
             this.Controls.Add(this.titleLbl);
@@ -160,5 +175,6 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label titleLbl;
         private System.Windows.Forms.PictureBox NextClientBtn;
+        private System.Windows.Forms.CheckBox cbChangeMode;
     }
 }
