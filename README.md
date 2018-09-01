@@ -3,7 +3,7 @@ Gutter line viewer for Ragnarok iRo.
 Can work with any RO clients if using it with file mode - you should bind /where and /savechat commands and use this binds for refresh GutterLines image.
 You can also make a macro to call these commands automatically using AutoHotkey or if you have a gaming mouse.
 
-[Download link](https://github.com/miatribe/GutterLines/releases/download/1.5/GutterLines.zip)
+[Download link](https://github.com/b001e4n/GutterLines/releases/download/1.6/GutterLines.zip)
 
 [Youtube demo](https://youtu.be/hggU2WS2KyU)
 
