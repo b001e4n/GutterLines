@@ -13,7 +13,7 @@ Arrow at bottom right can be used to cycle between RO clients in memory mode or 
 
 Use the system tray icon to toggle peripheral vision mode.
 
-![preview](https://raw.githubusercontent.com/miatribe/gutterlines/master/GutterLinesPrev.png)
+![preview](https://raw.githubusercontent.com/b001e4n/gutterlines/master/GutterLinesPrev.png)
 
 Use the 'file' check box to toggle file mode.
 ```
