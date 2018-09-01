@@ -16,18 +16,15 @@ Use the system tray icon to toggle peripheral vision mode.
 ![preview](https://raw.githubusercontent.com/miatribe/gutterlines/master/GutterLinesPrev.png)
 
 Use the 'file' check box to toggle file mode.
-
-########################
+```
 settings.ini description
-########################
 
-CoordsAccessMod: 			0 - memory access mode, 1 - file access mode.
-ChatLogConfigs: 			List of configs in file mode.
-	Name:					Name.
-	Path:					Path to the directory where chat logs saved.
-	FileNamePattern:		Pattern for filter chat log files.
-	CoordsPattern:			Pattern for filter coords.
+CoordsAccessMod: 		0 - memory access mode, 1 - file access mode.
+ChatLogConfigs: 		List of configs in file mode.
+	Name:			Name.
+	Path:			Path to the directory where chat logs saved.
+	FileNamePattern:	Pattern for filter chat log files.
+	CoordsPattern:		Pattern for filter coords.
 	RemoveFilesAfterRead:	1 - remove files every time after read, 0 - do nothing.
 CurrentChatLogConfigIndex:	Current file config index of ChatLogConfigs section, starts with 0.
-
-########################
+```
